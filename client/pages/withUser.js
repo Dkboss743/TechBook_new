@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Router } from "next/router";
 import { API } from "../config";
 import { getCookie } from "../helpers/auth";
 const withUser = (Page) => {
@@ -21,10 +22,13 @@ const withUser = (Page) => {
         }
       }
     }
+
     if (user === null) {
+      console.log(context.res);
       context.res.writeHead(302, {
         Location: "/",
       });
+      context.res.end();
     } else {
       return {
         ...(Page.getInitialProps ? await Page.getInitialProps(context) : {}),

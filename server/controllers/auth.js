@@ -34,9 +34,7 @@ exports.register = (req, res) => {
 
     // send email
     const params = registerEmailParams(email, token);
-
     const sendEmailOnRegister = ses.sendEmail(params).promise();
-
     sendEmailOnRegister
       .then((data) => {
         console.log("email submitted to SES", data);
@@ -55,7 +53,6 @@ exports.register = (req, res) => {
 
 exports.registerActivate = (req, res) => {
   const { token } = req.body;
-  // console.log(token);
   jwt.verify(
     token,
     process.env.JWT_ACCOUNT_ACTIVATION,
