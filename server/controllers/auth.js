@@ -2,7 +2,11 @@ const User = require("../models/user");
 const AWS = require("aws-sdk");
 const jwt = require("jsonwebtoken");
 const expressjwt = require("express-jwt");
-const { registerEmailParams } = require("../helpers/email");
+const _ = require("lodash");
+const {
+  registerEmailParams,
+  forgotPasswordEmailParams,
+} = require("../helpers/email");
 const shortId = require("shortid");
 
 AWS.config.update({
@@ -154,4 +158,86 @@ exports.adminMiddleware = (req, res, next) => {
     req.profile = user;
     next();
   });
+};
+exports.forgotPassword = (req, res) => {
+  const { email } = req.body;
+  User.findOne({
+    email,
+  }).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User with that email does not exist",
+      });
+    }
+    const token = jwt.sign(
+      {
+        name: user.name,
+      },
+      process.env.JWT_RESET_PASSWORD,
+      {
+        expiresIn: "10m",
+      }
+    );
+    const params = forgotPasswordEmailParams(email, token);
+    return user.updateOne({ resetPasswordLink: token }, (err, success) => {
+      if (err) {
+        return res.status(400).json({
+          error: "Password reset faild. Try Later",
+        });
+      }
+      const sendEmail = ses.sendEmail(params).promise();
+      sendEmail
+        .then((data) => {
+          console.log("ses reset paswword success", data);
+          return res.json({
+            message: `Email has been sent to ${email} . Click on the link to reset you password`,
+          });
+        })
+        .catch((error) => {
+          res.json.status(400).json({
+            message: `We could not verify your email. Try later.`,
+          });
+        });
+    });
+  });
+};
+exports.resetPassword = (req, res) => {
+  const { resetPasswordLink, newPassword } = req.body;
+  if (resetPasswordLink) {
+    jwt.verify(
+      resetPasswordLink,
+      process.env.JWT_RESET_PASSWORD,
+      (err, success) => {
+        if (err) {
+          return res.status(400).json({
+            error: "Expired Link, Try Again",
+          });
+        }
+        User.findOne({
+          resetPasswordLink,
+        }).exec((err, user) => {
+          if (err || !user) {
+            return res.status(400).json({
+              error: "Invalid token, Try again",
+            });
+          }
+          const updatedFields = {
+            password: newPassword,
+            newPasswordLink: "",
+          };
+          user = _.extend(user, updatedFields);
+          user.save((err, result) => {
+            if (err) {
+              return res.status(400).json({
+                error: "Password reset failed, Try Again",
+              });
+            }
+            res.json({
+              message: "Password has been update, you can login now!",
+            });
+          });
+        });
+      }
+    );
+  }
 };
