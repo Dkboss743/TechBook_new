@@ -15,7 +15,7 @@ const {
   register,
   registerActivate,
   login,
-  requireSignin,
+  requireSignIn,
   forgotPassword,
   resetPassword,
 } = require("../controllers/auth");

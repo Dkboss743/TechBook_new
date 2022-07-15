@@ -3,7 +3,7 @@ const router = express.Router();
 
 // import middlewares
 const {
-  requireSignin,
+  requireSignIn,
   authMiddleware,
   adminMiddleware,
 } = require("../controllers/auth");
@@ -12,7 +12,7 @@ const {
 const { read } = require("../controllers/user");
 
 // routes
-router.get("/user", requireSignin, authMiddleware, read);
-router.get("/admin", requireSignin, adminMiddleware, read);
+router.get("/user", requireSignIn, authMiddleware, read);
+router.get("/admin", requireSignIn, adminMiddleware, read);
 
 module.exports = router;

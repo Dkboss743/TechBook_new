@@ -122,7 +122,7 @@ exports.login = (req, res) => {
   });
 };
 
-exports.requireSignin = expressjwt({
+exports.requireSignIn = expressjwt({
   secret: process.env.JWT_SECRET,
   algorithms: ["sha1", "RS256", "HS256"],
 }); // req.user
