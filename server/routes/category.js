@@ -17,8 +17,8 @@ const {
 // routes
 router.post(
   "/category",
-  // categoryCreateValidator,
-  // runValidation,
+  categoryCreateValidator,
+  runValidation,
   requireSignIn,
   adminMiddleware,
   create
