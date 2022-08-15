@@ -6,7 +6,7 @@ import { API } from "../config";
 const Home = ({ categories }) => {
   const listCategories = () =>
     categories.map((c, i) => (
-      <Link href="/">
+      <Link href={`/links/${c.slug}`}>
         <a
           style={{ border: "1px solid red" }}
           className="bg-light p-3 col-md-4"
@@ -17,7 +17,11 @@ const Home = ({ categories }) => {
                 <img
                   src={c.image && c.image.url}
                   alt={c.name}
-                  style={{ width: "100px", height: "auto" }}
+                  style={{
+                    width: "100px",
+                    height: "auto",
+                    transform: "translateZ(42px)",
+                  }}
                   className="pr-3"
                 />
               </div>

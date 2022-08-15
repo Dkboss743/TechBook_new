@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const User = require("./user");
 var ObjectId = mongoose.ObjectId;
 const categorySchema = new mongoose.Schema(
   {

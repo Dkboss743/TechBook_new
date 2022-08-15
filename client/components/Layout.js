@@ -31,6 +31,16 @@ const Layout = ({ children }) => {
             <a className="nav-link text-dark">Home</a>
           </Link>
         </li>
+        <li className="nav-item">
+          <Link href="/user/link/create">
+            <a
+              className="nav-link text-dark btn btn-success"
+              style={{ borderRadius: "20px" }}
+            >
+              Submit a link
+            </a>
+          </Link>
+        </li>
 
         {!isAuth() && (
           <React.Fragment>
@@ -39,6 +49,7 @@ const Layout = ({ children }) => {
                 <a className="nav-link text-dark">Login</a>
               </Link>
             </li>
+
             <li className="nav-item">
               <Link href="/register">
                 <a className="nav-link text-dark">Register</a>
